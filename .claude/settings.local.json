@@ -53,7 +53,10 @@
       "Bash(awk -F: '{print $1\":\"$2}')",
       "Bash(perl -0pi -e 's/\\(# Allow\\\\/disallow new user signups to your project\\\\.\\\\nenable_signup = \\)true/${1}false/; s/\\(# Allow\\\\/disallow new user signups via email to your project\\\\.\\\\nenable_signup = \\)true/${1}false/' supabase/config.toml)",
       "Bash(pkill -f \"next dev\")",
-      "Bash(rm -rf .next/cache)"
+      "Bash(rm -rf .next/cache)",
+      "Bash(git remote *)",
+      "Bash(git branch *)",
+      "Bash(git push *)"
     ]
   }
 }
