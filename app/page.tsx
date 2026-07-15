@@ -50,11 +50,8 @@ async function getSettings(): Promise<PublicSettings> {
   try {
     const supabase = createAdminClient();
     const { data } = await supabase
-      .from("company_settings")
-      .select(
-        "public_email, public_phone, public_phone_2, instagram_url, youtube_url, tiktok_url, linkedin_url, youtube_channel_id, showreel_youtube_id"
-      )
-      .eq("id", 1)
+      .from("public_site_settings")
+      .select("*")
       .single<PublicSettings>();
     return { ...fallback, ...(data ?? {}) };
   } catch {

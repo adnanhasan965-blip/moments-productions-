@@ -50,3 +50,8 @@ supabase/.branches/
 # local team credentials (real passwords) — use scripts/seed-users.example.mjs as the template
 scripts/seed-users.mjs
 !.env.production.example
+
+# agent skills (local tooling)
+.agents/
+.claude/skills/
+skills-lock.json

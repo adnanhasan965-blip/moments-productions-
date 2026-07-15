@@ -262,6 +262,20 @@ grant execute on all functions in schema public to authenticated, service_role;
 alter default privileges in schema public
   grant select, insert, update, delete on tables to authenticated, service_role;
 
+-- ============ PUBLIC SITE VIEW ============
+-- Exposes ONLY the public marketing columns of company_settings to anon
+-- (no bank details / numbering), so the public homepage can read them with
+-- the publishable key. Runs as owner, bypassing company_settings RLS.
+create or replace view public.public_site_settings as
+select
+  public_email, public_phone, public_phone_2,
+  instagram_url, youtube_url, tiktok_url, linkedin_url,
+  youtube_channel_id, showreel_youtube_id
+from public.company_settings
+where id = 1;
+
+grant select on public.public_site_settings to anon, authenticated;
+
 -- ============ STORAGE ============
 -- Buckets: receipts (cost attachments), documents (generated PDFs)
 insert into storage.buckets (id, name, public) values

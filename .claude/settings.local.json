@@ -56,7 +56,16 @@
       "Bash(rm -rf .next/cache)",
       "Bash(git remote *)",
       "Bash(git branch *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "mcp__0bc13152-17f6-45f5-af89-79a0b06b6b57__list_tables",
+      "mcp__0bc13152-17f6-45f5-af89-79a0b06b6b57__apply_migration",
+      "mcp__0bc13152-17f6-45f5-af89-79a0b06b6b57__get_project_url",
+      "mcp__0bc13152-17f6-45f5-af89-79a0b06b6b57__get_publishable_keys",
+      "mcp__0bc13152-17f6-45f5-af89-79a0b06b6b57__execute_sql",
+      "Bash(curl -s -X POST https://lhosfecnhiinrrmeegvz.supabase.co/auth/v1/token?grant_type=password -H 'apikey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxob3NmZWNuaGlpbnJybWVlZ3Z6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQwMDM4MDQsImV4cCI6MjA5OTU3OTgwNH0.NaQC3oJy8CvU10vWVDPNpaQxTsQE_VoyYc7TY2_DB1Q' -H 'Content-Type: application/json' -d '{\"email\":\"adnan@momentskuwait.com\",\"password\":\"Adnan5305\"}')",
+      "Bash(python3 -c \"import json,sys; d=json.load\\(sys.stdin\\); print\\('LOGIN OK' if d.get\\('access_token'\\) else \\('FAIL: '+str\\(d\\)\\)\\)\")",
+      "Bash(npx --yes skills add supabase/agent-skills)",
+      "Bash(npm ls *)"
     ]
   }
 }

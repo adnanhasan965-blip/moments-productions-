@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { SUPABASE_KEY, SUPABASE_URL } from "@/lib/supabase/env";
 
 export async function updateSession(request: NextRequest) {
   const supabaseResponse = NextResponse.next({ request });
@@ -12,13 +13,10 @@ export async function updateSession(request: NextRequest) {
     path.startsWith("/brand") || // style guide, no data
     path.startsWith("/print"); // tokenized share pages
 
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
   // If Supabase isn't configured (missing env vars in this environment),
   // never crash the whole site — just let public pages render and send
   // everything else to /login rather than throwing a 500.
-  if (!url || !anonKey) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) {
     if (isPublic) return supabaseResponse;
     const redirect = request.nextUrl.clone();
     redirect.pathname = "/login";
@@ -26,7 +24,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   let response = supabaseResponse;
-  const supabase = createServerClient(url, anonKey, {
+  const supabase = createServerClient(SUPABASE_URL, SUPABASE_KEY, {
     cookies: {
       getAll() {
         return request.cookies.getAll();
