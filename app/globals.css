@@ -1,0 +1,281 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-jetbrains);
+  --font-mono: var(--font-jetbrains);
+  --font-heading: var(--font-bebas);
+  --font-display: var(--font-bebas);
+  --font-editorial: var(--font-editorial);
+  --font-arabic: var(--font-arabic);
+  --color-signal: var(--brand-signal);
+  --color-cream: var(--brand-cream);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ============================================================
+   MOMENTS PRODUCTIONS — BRAND TOKENS
+   Source: brand-book.pdf (April 2026, final).
+   Three values only — no greys, no tints:
+     BLACK   #000000  PRIMARY · GROUND   (PMS Black 6 C)
+     SIGNAL  #E50914  ACCENT · SIGNAL    (PMS 485 C)
+     CREAM   #F5F0E8  TYPE · LIGHT       (PMS 7527 C)
+   Structural borders/hovers use alpha of black/cream only.
+   ============================================================ */
+:root {
+  --brand-black: #000000;
+  --brand-signal: #e50914;
+  --brand-cream: #f5f0e8;
+}
+
+/* Light — cream ground, black type ("the room before the picture") */
+:root {
+  --background: var(--brand-cream);
+  --foreground: var(--brand-black);
+  --card: var(--brand-cream);
+  --card-foreground: var(--brand-black);
+  --popover: var(--brand-cream);
+  --popover-foreground: var(--brand-black);
+  --primary: var(--brand-black);
+  --primary-foreground: var(--brand-cream);
+  --secondary: rgb(0 0 0 / 6%);
+  --secondary-foreground: var(--brand-black);
+  --muted: rgb(0 0 0 / 5%);
+  --muted-foreground: rgb(0 0 0 / 55%);
+  --accent: rgb(0 0 0 / 6%);
+  --accent-foreground: var(--brand-black);
+  --destructive: var(--brand-signal);
+  --border: rgb(0 0 0 / 18%);
+  --input: rgb(0 0 0 / 25%);
+  --ring: var(--brand-signal);
+  --chart-1: var(--brand-signal);
+  --chart-2: var(--brand-black);
+  --chart-3: rgb(0 0 0 / 60%);
+  --chart-4: rgb(0 0 0 / 40%);
+  --chart-5: rgb(0 0 0 / 25%);
+  --radius: 0rem; /* title-card sharp — no rounded corners */
+  --sidebar: var(--brand-black);
+  --sidebar-foreground: var(--brand-cream);
+  --sidebar-primary: var(--brand-signal);
+  --sidebar-primary-foreground: var(--brand-cream);
+  --sidebar-accent: rgb(245 240 232 / 10%);
+  --sidebar-accent-foreground: var(--brand-cream);
+  --sidebar-border: rgb(245 240 232 / 15%);
+  --sidebar-ring: var(--brand-signal);
+}
+
+/* Dark — black ground, cream type (the title card) */
+.dark {
+  --background: var(--brand-black);
+  --foreground: var(--brand-cream);
+  --card: var(--brand-black);
+  --card-foreground: var(--brand-cream);
+  --popover: var(--brand-black);
+  --popover-foreground: var(--brand-cream);
+  --primary: var(--brand-cream);
+  --primary-foreground: var(--brand-black);
+  --secondary: rgb(245 240 232 / 10%);
+  --secondary-foreground: var(--brand-cream);
+  --muted: rgb(245 240 232 / 8%);
+  --muted-foreground: rgb(245 240 232 / 60%);
+  --accent: rgb(245 240 232 / 10%);
+  --accent-foreground: var(--brand-cream);
+  --destructive: var(--brand-signal);
+  --border: rgb(245 240 232 / 20%);
+  --input: rgb(245 240 232 / 28%);
+  --ring: var(--brand-signal);
+  --chart-1: var(--brand-signal);
+  --chart-2: var(--brand-cream);
+  --chart-3: rgb(245 240 232 / 60%);
+  --chart-4: rgb(245 240 232 / 40%);
+  --chart-5: rgb(245 240 232 / 25%);
+  --sidebar: var(--brand-black);
+  --sidebar-foreground: var(--brand-cream);
+  --sidebar-primary: var(--brand-signal);
+  --sidebar-primary-foreground: var(--brand-cream);
+  --sidebar-accent: rgb(245 240 232 / 10%);
+  --sidebar-accent-foreground: var(--brand-cream);
+  --sidebar-border: rgb(245 240 232 / 15%);
+  --sidebar-ring: var(--brand-signal);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+  /* Display voice: Bebas Neue, always uppercase, tight tracking */
+  h1,
+  h2,
+  .font-display {
+    font-family: var(--font-bebas);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-weight: 400;
+  }
+  /* Arabic mode: JetBrains Mono stays primary (digits, Latin, currency);
+     Arabic glyphs — which JetBrains Mono lacks — fall through to the
+     Arabic face. letter-spacing must stay 0 or joined script breaks. */
+  [dir="rtl"] body,
+  [dir="rtl"] h1,
+  [dir="rtl"] h2,
+  [dir="rtl"] .font-display {
+    font-family: var(--font-jetbrains), var(--font-arabic);
+    text-transform: none;
+    letter-spacing: 0;
+  }
+}
+
+/* Arabic script must keep its cursive letter connections — decorative
+   tracking (letter-spacing utilities) tears the glyphs apart. Neutralize
+   it for EVERYTHING inside an RTL/Arabic context: app UI, public page,
+   and the printable/PDF sheets (which set dir/lang per document). */
+[dir="rtl"],
+[dir="rtl"] *,
+[lang="ar"],
+[lang="ar"] * {
+  letter-spacing: 0 !important;
+}
+
+/* ============ PUBLIC PAGE MOTION ============ */
+/* Scroll-reveal: elements start hidden + lowered, animate in when the
+   IntersectionObserver adds .is-visible. */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Continuous logo marquee — two rows scrolling opposite directions. */
+@keyframes marquee-left {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes marquee-right {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-left 40s linear infinite;
+}
+.marquee-track.reverse {
+  animation-name: marquee-right;
+}
+.marquee-row:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Soft, slow float for accent bits. */
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+.float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .marquee-track,
+  .float-slow {
+    animation: none;
+  }
+}
+
+/* Viewfinder brackets — hairline corner marks (1–2px on screen).
+   Wraps content the brand presents. NEVER wrap the wordmark. */
+.viewfinder {
+  position: relative;
+}
+.viewfinder::before,
+.viewfinder::after,
+.viewfinder > .vf::before,
+.viewfinder > .vf::after {
+  content: "";
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 0 solid currentColor;
+}
+.viewfinder::before {
+  top: 0;
+  left: 0;
+  border-top-width: 1.5px;
+  border-left-width: 1.5px;
+}
+.viewfinder::after {
+  top: 0;
+  right: 0;
+  border-top-width: 1.5px;
+  border-right-width: 1.5px;
+}
+.viewfinder > .vf::before {
+  bottom: 0;
+  left: 0;
+  border-bottom-width: 1.5px;
+  border-left-width: 1.5px;
+}
+.viewfinder > .vf::after {
+  bottom: 0;
+  right: 0;
+  border-bottom-width: 1.5px;
+  border-right-width: 1.5px;
+}
