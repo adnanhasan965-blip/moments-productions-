@@ -49,3 +49,4 @@ supabase/.branches/
 
 # local team credentials (real passwords) — use scripts/seed-users.example.mjs as the template
 scripts/seed-users.mjs
+!.env.production.example
