@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
       bodySizeLimit: "10mb",
     },
   },
+  // Headless-Chrome packages must stay external so Next traces their
+  // binaries correctly (local: puppeteer; serverless: @sparticuz/chromium).
+  serverExternalPackages: ["puppeteer", "puppeteer-core", "@sparticuz/chromium"],
 };
 
 export default withNextIntl(nextConfig);

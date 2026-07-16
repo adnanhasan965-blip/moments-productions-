@@ -2,6 +2,9 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { appOrigin, renderUrlToPdf } from "@/lib/pdf";
 
+// PDF rendering launches headless Chrome — allow up to 60s on serverless.
+export const maxDuration = 60;
+
 /** On-demand branded PDF of a day's shot list or call sheet (session-authed). */
 export async function GET(request: NextRequest) {
   const supabase = await createClient();

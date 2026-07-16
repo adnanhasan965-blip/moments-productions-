@@ -19,6 +19,36 @@ export async function currentCookieHeader(): Promise<string> {
 }
 
 /**
+ * Launch headless Chromium in either environment:
+ * - serverless (Vercel/AWS Lambda): puppeteer-core + @sparticuz/chromium
+ * - local / full servers: the bundled Chrome from the `puppeteer` package
+ */
+async function launchBrowser() {
+  const isServerless = Boolean(
+    process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME
+  );
+
+  if (isServerless) {
+    const [{ default: chromium }, { default: puppeteerCore }] =
+      await Promise.all([
+        import("@sparticuz/chromium"),
+        import("puppeteer-core"),
+      ]);
+    return puppeteerCore.launch({
+      args: chromium.args,
+      executablePath: await chromium.executablePath(),
+      headless: true,
+    });
+  }
+
+  const puppeteer = (await import("puppeteer")).default;
+  return puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
+}
+
+/**
  * Print any internal page to an A4 PDF buffer via headless Chromium.
  * Forwards the caller's cookies so the printable page loads *as the
  * logged-in user* — the print pages read data through RLS, so without
@@ -28,11 +58,7 @@ export async function renderUrlToPdf(
   url: string,
   cookieHeader?: string
 ): Promise<Uint8Array> {
-  const puppeteer = (await import("puppeteer")).default;
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-  });
+  const browser = await launchBrowser();
   try {
     const page = await browser.newPage();
 

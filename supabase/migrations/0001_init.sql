@@ -297,3 +297,7 @@ create policy "team writes receipts" on storage.objects for insert to authentica
   with check (bucket_id in ('receipts', 'documents'));
 create policy "team deletes receipts" on storage.objects for delete to authenticated
   using (bucket_id in ('receipts', 'documents'));
+-- upsert (PDF regeneration, logo replacement) needs UPDATE as well as INSERT
+create policy "team updates files" on storage.objects for update to authenticated
+  using (bucket_id in ('receipts', 'documents', 'client-logos'))
+  with check (bucket_id in ('receipts', 'documents', 'client-logos'));
