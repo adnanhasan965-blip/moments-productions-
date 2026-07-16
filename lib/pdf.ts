@@ -81,6 +81,11 @@ export async function renderUrlToPdf(
     }
 
     await page.goto(url, { waitUntil: "networkidle0", timeout: 30000 });
+    // Guarantee every @font-face (incl. the Arabic face) has finished loading
+    // before snapshotting, so Arabic glyphs never fall back to tofu boxes.
+    await page.evaluate(async () => {
+      await document.fonts.ready;
+    });
     return await page.pdf({
       format: "A4",
       printBackground: true,
