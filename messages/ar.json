@@ -303,6 +303,24 @@
     "downloadPdf": "تنزيل PDF",
     "plannedTime": "وقت اللقطة"
   },
+  "todos": {
+    "title": "قائمة المهام",
+    "sharedNote": "مشتركة بين كل أيام {type} في هذا المشروع — أي تغيير هنا يظهر في كل يوم {type}.",
+    "add": "+ إضافة مهمة",
+    "addTitle": "إضافة مهمة",
+    "editTitle": "تعديل المهمة",
+    "task": "المهمة *",
+    "priority": "الأولوية",
+    "priority_high": "عالية",
+    "priority_medium": "متوسطة",
+    "priority_low": "منخفضة",
+    "dueDate": "تاريخ الاستحقاق",
+    "notes": "ملاحظات",
+    "saveTask": "حفظ المهمة",
+    "done": "تم",
+    "empty": "لا مهام بعد. أضف أول مهمة — اسحب الصفوف لإعادة ترتيبها لاحقًا.",
+    "deleteConfirm": "حذف هذه المهمة؟"
+  },
   "callSheet": {
     "title": "ورقة النداء",
     "generalCall": "النداء العام",

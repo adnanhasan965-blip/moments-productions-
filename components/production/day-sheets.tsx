@@ -7,6 +7,7 @@ import {
   type ProductionDay,
   type SheetLang,
   type Shot,
+  type TodoItem,
 } from "@/lib/production";
 
 function SheetShell({
@@ -146,6 +147,91 @@ export function ShotListSheet({
             ))}
           </tbody>
         </table>
+        {day.notes && (
+          <p className="text-xs">
+            <span className="text-black/55">{sheetLabel("notes", lang)}: </span>
+            {day.notes}
+          </p>
+        )}
+      </div>
+    </SheetShell>
+  );
+}
+
+export function TodoListSheet({
+  day,
+  todos,
+  projectName,
+  lang = "en",
+  clientLogoUrl,
+}: {
+  day: ProductionDay;
+  todos: TodoItem[];
+  projectName: string;
+  lang?: SheetLang;
+  clientLogoUrl?: string;
+}) {
+  const doneCount = todos.filter((x) => x.done).length;
+  const priorityKey = (p: TodoItem["priority"]) =>
+    p === "high" ? "priority_high" : p === "low" ? "priority_low" : "priority_medium";
+  return (
+    <SheetShell lang={lang}>
+      <div className="space-y-8">
+        <SheetHeader
+          day={day}
+          projectName={projectName}
+          title={sheetLabel("todo_list", lang)}
+          subtitle={`${todos.length} ${sheetLabel("tasks_count", lang)} · ${doneCount} ${sheetLabel("done_count", lang)}`}
+          lang={lang}
+          clientLogoUrl={clientLogoUrl}
+        />
+        {todos.length === 0 ? (
+          <p className="text-sm text-black/55">{sheetLabel("no_todos", lang)}</p>
+        ) : (
+          <table className="w-full border-collapse text-xs">
+            <thead>
+              <tr className="border-y border-black text-[10px] tracking-[0.15em] text-black/55">
+                <th className="w-8 py-2 text-center">✓</th>
+                <th className="py-2 pe-2 text-start">{sheetLabel("task_col", lang)}</th>
+                <th className="py-2 pe-2 text-start">{sheetLabel("priority_col", lang)}</th>
+                <th className="py-2 text-end">{sheetLabel("due_col", lang)}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {todos.map((x) => (
+                <tr key={x.id} className="border-b border-black/15 align-top">
+                  <td className="py-2 text-center">
+                    <span
+                      className={`inline-block h-3 w-3 border border-black ${
+                        x.done ? "bg-black" : ""
+                      }`}
+                    />
+                  </td>
+                  <td className={`py-2 pe-2 ${x.done ? "line-through opacity-50" : ""}`}>
+                    <p>{x.title}</p>
+                    {x.notes && <p className="text-black/55">{x.notes}</p>}
+                  </td>
+                  <td className="py-2 pe-2">
+                    <span
+                      className={
+                        x.priority === "high"
+                          ? "font-bold text-[#E63329]"
+                          : x.priority === "low"
+                            ? "text-black/55"
+                            : ""
+                      }
+                    >
+                      {sheetLabel(priorityKey(x.priority), lang)}
+                    </span>
+                  </td>
+                  <td className="py-2 text-end whitespace-nowrap font-bold">
+                    {x.due_date ? formatDate(x.due_date, lang) : ""}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
         {day.notes && (
           <p className="text-xs">
             <span className="text-black/55">{sheetLabel("notes", lang)}: </span>

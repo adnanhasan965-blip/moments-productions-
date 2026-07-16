@@ -174,6 +174,99 @@ export async function reorderShots(
   revalidatePath(`/projects/${projectId}/days/${dayId}`);
 }
 
+// ---------- to-dos (prep / post / delivery days) ----------
+// Todos are keyed by (project_id, day_type), not by day: every prep day of a
+// project shares one list, so an edit made on any prep day is instantly on
+// all of them. Same for post production and delivery.
+
+/** Revalidate every day page of the project — the shared list shows on all
+ *  days of its type. */
+function revalidateProjectDays(projectId: string) {
+  revalidatePath(`/projects/${projectId}`);
+  revalidatePath(`/projects/[id]/days/[dayId]`, "page");
+}
+
+export async function saveTodo(
+  projectId: string,
+  dayType: string,
+  todoId: string | null,
+  _prev: ActionState,
+  formData: FormData
+): Promise<ActionState> {
+  const supabase = await createClient();
+
+  const payload: Record<string, unknown> = {
+    project_id: projectId,
+    day_type: dayType,
+    title: ((formData.get("title") as string) ?? "").trim(),
+    notes: ((formData.get("notes") as string) ?? "").trim(),
+    priority: (formData.get("priority") as string) || "medium",
+    due_date: (formData.get("due_date") as string) || null,
+  };
+  if (!payload.title) return { error: "Task is required." };
+
+  if (!todoId) {
+    const { data: last } = await supabase
+      .from("project_todos")
+      .select("sort_order")
+      .eq("project_id", projectId)
+      .eq("day_type", dayType)
+      .order("sort_order", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    payload.sort_order = (last?.sort_order ?? 0) + 1;
+  }
+
+  const { error } = todoId
+    ? await supabase.from("project_todos").update(payload).eq("id", todoId)
+    : await supabase.from("project_todos").insert(payload);
+  if (error) return { error: error.message };
+
+  revalidateProjectDays(projectId);
+  return { done: true };
+}
+
+export async function deleteTodo(
+  todoId: string,
+  projectId: string
+): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase.from("project_todos").delete().eq("id", todoId);
+  if (error) throw new Error(error.message);
+  revalidateProjectDays(projectId);
+}
+
+export async function toggleTodoDone(
+  todoId: string,
+  projectId: string,
+  done: boolean
+): Promise<void> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("project_todos")
+    .update({ done })
+    .eq("id", todoId);
+  if (error) throw new Error(error.message);
+  revalidateProjectDays(projectId);
+}
+
+export async function reorderTodos(
+  projectId: string,
+  dayType: string,
+  orderedIds: string[]
+): Promise<void> {
+  const supabase = await createClient();
+  for (let i = 0; i < orderedIds.length; i++) {
+    await supabase
+      .from("project_todos")
+      .update({ sort_order: i + 1 })
+      .eq("id", orderedIds[i])
+      .eq("project_id", projectId)
+      .eq("day_type", dayType);
+  }
+  revalidateProjectDays(projectId);
+}
+
 // ---------- call sheet ----------
 
 function parseJsonRows<T>(

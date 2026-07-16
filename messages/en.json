@@ -303,6 +303,24 @@
     "downloadPdf": "Download PDF",
     "plannedTime": "Shot time"
   },
+  "todos": {
+    "title": "To-do list",
+    "sharedNote": "Shared across all {type} days of this project — changes here show on every {type} day.",
+    "add": "+ Add task",
+    "addTitle": "Add task",
+    "editTitle": "Edit task",
+    "task": "Task *",
+    "priority": "Priority",
+    "priority_high": "High",
+    "priority_medium": "Medium",
+    "priority_low": "Low",
+    "dueDate": "Due date",
+    "notes": "Notes",
+    "saveTask": "Save task",
+    "done": "Done",
+    "empty": "No tasks yet. Add the first task — drag rows to reorder them later.",
+    "deleteConfirm": "Delete this task?"
+  },
   "callSheet": {
     "title": "Call sheet",
     "generalCall": "General call",

@@ -5,7 +5,8 @@ import { appOrigin, renderUrlToPdf } from "@/lib/pdf";
 // PDF rendering launches headless Chrome — allow up to 60s on serverless.
 export const maxDuration = 60;
 
-/** On-demand branded PDF of a day's shot list or call sheet (session-authed). */
+/** On-demand branded PDF of a day's shot list, call sheet, or to-do list
+ *  (session-authed). */
 export async function GET(request: NextRequest) {
   const supabase = await createClient();
   const {
@@ -14,7 +15,8 @@ export async function GET(request: NextRequest) {
   if (!user) return new NextResponse("Unauthorized", { status: 401 });
 
   const dayId = request.nextUrl.searchParams.get("day");
-  const view = request.nextUrl.searchParams.get("view") === "call" ? "call" : "shots";
+  const rawView = request.nextUrl.searchParams.get("view");
+  const view = rawView === "call" || rawView === "todo" ? rawView : "shots";
   const lang = request.nextUrl.searchParams.get("lang") === "ar" ? "ar" : "en";
   if (!dayId) return new NextResponse("Missing day", { status: 400 });
 
@@ -34,7 +36,9 @@ export async function GET(request: NextRequest) {
     return new NextResponse(Buffer.from(pdf), {
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": `attachment; filename="${view === "call" ? "call-sheet" : "shot-list"}-${day.day_date}.pdf"`,
+        "Content-Disposition": `attachment; filename="${
+          view === "call" ? "call-sheet" : view === "todo" ? "todo-list" : "shot-list"
+        }-${day.day_date}.pdf"`,
       },
     });
   } catch (e) {

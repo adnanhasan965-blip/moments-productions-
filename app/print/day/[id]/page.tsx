@@ -1,8 +1,19 @@
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { CallSheetSheet, ShotListSheet } from "@/components/production/day-sheets";
+import {
+  CallSheetSheet,
+  ShotListSheet,
+  TodoListSheet,
+} from "@/components/production/day-sheets";
 import { PrintButton } from "@/components/documents/print-button";
-import type { CallSheet, ProductionDay, SheetLang, Shot } from "@/lib/production";
+import {
+  isTodoDayType,
+  type CallSheet,
+  type ProductionDay,
+  type SheetLang,
+  type Shot,
+  type TodoItem,
+} from "@/lib/production";
 
 export const dynamic = "force-dynamic";
 
@@ -26,32 +37,62 @@ export default async function PrintDayPage({
     .single<ProductionDay>();
   if (!day) notFound();
 
-  const [{ data: project }, { data: shots }, { data: callSheet }] =
-    await Promise.all([
-      supabase
-        .from("projects")
-        .select("name, client_logo_path")
-        .eq("id", day.project_id)
-        .single(),
-      supabase
-        .from("shots")
-        .select("*")
-        .eq("production_day_id", id)
-        .order("sort_order")
-        .returns<Shot[]>(),
-      supabase
-        .from("call_sheets")
-        .select("*")
-        .eq("production_day_id", id)
-        .maybeSingle<CallSheet>(),
-    ]);
+  const sheetLang: SheetLang = lang === "ar" ? "ar" : "en";
+  const { data: project } = await supabase
+    .from("projects")
+    .select("name, client_logo_path")
+    .eq("id", day.project_id)
+    .single();
 
   const projectName = project?.name ?? "";
   const clientLogoUrl = project?.client_logo_path
     ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/client-logos/${project.client_logo_path}`
     : undefined;
+
+  // Non-shoot days print the shared to-do list (per project + day type)
+  // regardless of the requested view — they have no shots or call sheet.
+  if (isTodoDayType(day.day_type)) {
+    const { data: todos } = await supabase
+      .from("project_todos")
+      .select("*")
+      .eq("project_id", day.project_id)
+      .eq("day_type", day.day_type)
+      .order("sort_order")
+      .returns<TodoItem[]>();
+
+    return (
+      <main className="min-h-screen bg-black/90 py-8 print:bg-transparent print:py-0">
+        <div className="mx-auto mb-6 flex w-full max-w-[190mm] justify-end px-4 print:hidden">
+          <PrintButton />
+        </div>
+        <div className="shadow-2xl print:shadow-none">
+          <TodoListSheet
+            day={day}
+            todos={todos ?? []}
+            projectName={projectName}
+            lang={sheetLang}
+            clientLogoUrl={clientLogoUrl}
+          />
+        </div>
+      </main>
+    );
+  }
+
+  const [{ data: shots }, { data: callSheet }] = await Promise.all([
+    supabase
+      .from("shots")
+      .select("*")
+      .eq("production_day_id", id)
+      .order("sort_order")
+      .returns<Shot[]>(),
+    supabase
+      .from("call_sheets")
+      .select("*")
+      .eq("production_day_id", id)
+      .maybeSingle<CallSheet>(),
+  ]);
+
   const showCall = view === "call";
-  const sheetLang: SheetLang = lang === "ar" ? "ar" : "en";
 
   const effectiveCallSheet: CallSheet = callSheet ?? {
     id: "",

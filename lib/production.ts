@@ -99,12 +99,46 @@ export interface CallSheet {
   notes: string;
 }
 
+/** Non-shoot day types (prep / post / delivery) use a shared to-do list
+ *  instead of shot list + call sheet. The list is keyed by
+ *  (project_id, day_type), so every prep day of a project shows the same
+ *  list — editing it on one day is editing it on all of them. */
+export function isTodoDayType(type: DayType): boolean {
+  return type !== "shoot";
+}
+
+export type TodoPriority = "low" | "medium" | "high";
+
+export const TODO_PRIORITIES: TodoPriority[] = ["high", "medium", "low"];
+
+export interface TodoItem {
+  id: string;
+  project_id: string;
+  day_type: DayType;
+  sort_order: number;
+  title: string;
+  notes: string;
+  priority: TodoPriority;
+  due_date: string | null;
+  done: boolean;
+}
+
 /** Bilingual labels for the printable shot list / call sheet / schedule. */
 export type SheetLang = "en" | "ar";
 
 export const SHEET_LABELS = {
   shot_list: { en: "Shot list", ar: "قائمة اللقطات" },
   call_sheet: { en: "Call sheet", ar: "ورقة النداء" },
+  todo_list: { en: "To-do list", ar: "قائمة المهام" },
+  task_col: { en: "TASK", ar: "المهمة" },
+  priority_col: { en: "PRIORITY", ar: "الأولوية" },
+  due_col: { en: "DUE", ar: "الاستحقاق" },
+  tasks_count: { en: "tasks", ar: "مهمة" },
+  done_count: { en: "done", ar: "منجز" },
+  priority_high: { en: "High", ar: "عالية" },
+  priority_medium: { en: "Medium", ar: "متوسطة" },
+  priority_low: { en: "Low", ar: "منخفضة" },
+  no_todos: { en: "No tasks yet.", ar: "لا توجد مهام بعد." },
   schedule_title: { en: "Schedule", ar: "الجدول" },
   shots_count: { en: "shots", ar: "لقطة" },
   general_call: { en: "GENERAL CALL", ar: "النداء العام" },
