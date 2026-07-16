@@ -41,7 +41,13 @@ async function launchBrowser() {
     });
   }
 
-  const puppeteer = (await import("puppeteer")).default;
+  // turbopackIgnore keeps the full `puppeteer` package out of the serverless
+  // bundle. Turbopack eagerly loads externalized packages at module init, and
+  // full puppeteer touches a browser-cache dir on load — which throws EEXIST
+  // on Vercel's read-only filesystem. Ignoring it means it's a real runtime
+  // import that only executes here, in the local (non-serverless) branch.
+  const puppeteer = (await import(/* turbopackIgnore: true */ "puppeteer"))
+    .default;
   return puppeteer.launch({
     headless: true,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],

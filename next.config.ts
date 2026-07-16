@@ -12,7 +12,10 @@ const nextConfig: NextConfig = {
   },
   // Headless-Chrome packages must stay external so Next traces their
   // binaries correctly (local: puppeteer; serverless: @sparticuz/chromium).
-  serverExternalPackages: ["puppeteer", "puppeteer-core", "@sparticuz/chromium"],
+  // Only the serverless Chrome packages are externalized. Full `puppeteer`
+  // (local dev only) is deliberately NOT here — it's a turbopackIgnore'd
+  // dynamic import in lib/pdf.ts so it never loads inside the Vercel bundle.
+  serverExternalPackages: ["puppeteer-core", "@sparticuz/chromium"],
   // @sparticuz/chromium reads its compressed Chromium binary from bin/*.br
   // at runtime via a computed path, so file-tracing doesn't see it as an
   // import and drops it from the serverless bundle ("input directory
