@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { CallSheetSheet, ShotListSheet } from "@/components/production/day-sheets";
 import { PrintButton } from "@/components/documents/print-button";
 import { formatDate, formatMoney, type Currency } from "@/lib/format";
@@ -38,7 +38,7 @@ export default async function PrintBookletPage({
   const sheetLang: SheetLang = lang === "ar" ? "ar" : "en";
   if (!key) notFound();
 
-  const supabase = createAdminClient();
+  const supabase = await createClient();
   const { data: project } = await supabase
     .from("projects")
     .select("id, name, client_name, status, currency, start_date, end_date, client_logo_path")

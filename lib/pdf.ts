@@ -1,6 +1,6 @@
 import "server-only";
-import { headers } from "next/headers";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { cookies, headers } from "next/headers";
+import { createClient } from "@/lib/supabase/server";
 
 export async function appOrigin(): Promise<string> {
   const h = await headers();
@@ -9,8 +9,25 @@ export async function appOrigin(): Promise<string> {
   return `${proto}://${host}`;
 }
 
-/** Print any internal page to an A4 PDF buffer via headless Chromium. */
-export async function renderUrlToPdf(url: string): Promise<Uint8Array> {
+/** Current request's cookies as a header string (to forward the session). */
+export async function currentCookieHeader(): Promise<string> {
+  const store = await cookies();
+  return store
+    .getAll()
+    .map((c) => `${c.name}=${c.value}`)
+    .join("; ");
+}
+
+/**
+ * Print any internal page to an A4 PDF buffer via headless Chromium.
+ * Forwards the caller's cookies so the printable page loads *as the
+ * logged-in user* — the print pages read data through RLS, so without
+ * the session they'd 404 and the PDF would be blank.
+ */
+export async function renderUrlToPdf(
+  url: string,
+  cookieHeader?: string
+): Promise<Uint8Array> {
   const puppeteer = (await import("puppeteer")).default;
   const browser = await puppeteer.launch({
     headless: true,
@@ -18,6 +35,19 @@ export async function renderUrlToPdf(url: string): Promise<Uint8Array> {
   });
   try {
     const page = await browser.newPage();
+
+    if (cookieHeader) {
+      const cookies = cookieHeader
+        .split(";")
+        .map((pair) => {
+          const i = pair.indexOf("=");
+          if (i < 0) return null;
+          return { name: pair.slice(0, i).trim(), value: pair.slice(i + 1).trim(), url };
+        })
+        .filter((c): c is { name: string; value: string; url: string } => !!c && !!c.name);
+      if (cookies.length) await page.setCookie(...cookies);
+    }
+
     await page.goto(url, { waitUntil: "networkidle0", timeout: 30000 });
     return await page.pdf({
       format: "A4",
@@ -31,14 +61,14 @@ export async function renderUrlToPdf(url: string): Promise<Uint8Array> {
 
 /**
  * Render a document's printable page and store the PDF in the
- * `documents` bucket. The printable page is the single source of
- * truth for layout, so the PDF always matches the web view.
+ * `documents` bucket. Runs inside an authed server action, so it reads
+ * data and writes storage as the current user (via their session).
  */
 export async function generateDocumentPdf(documentId: string): Promise<{
   path?: string;
   error?: string;
 }> {
-  const supabase = createAdminClient();
+  const supabase = await createClient();
   const { data: doc } = await supabase
     .from("documents")
     .select("id, project_id, doc_number, share_key")
@@ -49,8 +79,10 @@ export async function generateDocumentPdf(documentId: string): Promise<{
 
   try {
     const origin = await appOrigin();
+    const cookieHeader = await currentCookieHeader();
     const pdf = await renderUrlToPdf(
-      `${origin}/print/doc/${doc.id}?key=${doc.share_key}`
+      `${origin}/print/doc/${doc.id}?key=${doc.share_key}`,
+      cookieHeader
     );
 
     const path = `${doc.project_id}/${doc.doc_number}.pdf`;

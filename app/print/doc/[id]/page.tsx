@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { DocumentSheet } from "@/components/documents/doc-template";
 import { PrintButton } from "@/components/documents/print-button";
 import type { DocumentRow } from "@/lib/documents";
@@ -17,7 +17,7 @@ export default async function PrintDocumentPage({
   const { key } = await searchParams;
   if (!key) notFound();
 
-  const supabase = createAdminClient();
+  const supabase = await createClient();
   const { data: doc } = await supabase
     .from("documents")
     .select("*")

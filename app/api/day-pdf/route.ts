@@ -25,7 +25,8 @@ export async function GET(request: NextRequest) {
   try {
     const origin = await appOrigin();
     const pdf = await renderUrlToPdf(
-      `${origin}/print/day/${dayId}?key=${day.share_key}&view=${view}&lang=${lang}`
+      `${origin}/print/day/${dayId}?key=${day.share_key}&view=${view}&lang=${lang}`,
+      request.headers.get("cookie") ?? undefined
     );
     return new NextResponse(Buffer.from(pdf), {
       headers: {

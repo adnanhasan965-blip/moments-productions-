@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { PrintButton } from "@/components/documents/print-button";
 import { formatDate } from "@/lib/format";
 import { dayTypeLabel, sheetLabel, type ProductionDay, type SheetLang } from "@/lib/production";
@@ -19,7 +19,7 @@ export default async function PrintSchedulePage({
   const sheetLang: SheetLang = lang === "ar" ? "ar" : "en";
   if (!key) notFound();
 
-  const supabase = createAdminClient();
+  const supabase = await createClient();
   const { data: project } = await supabase
     .from("projects")
     .select("id, name, start_date, end_date, client_logo_path")

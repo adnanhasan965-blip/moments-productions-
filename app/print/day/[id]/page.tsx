@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { CallSheetSheet, ShotListSheet } from "@/components/production/day-sheets";
 import { PrintButton } from "@/components/documents/print-button";
 import type { CallSheet, ProductionDay, SheetLang, Shot } from "@/lib/production";
@@ -17,7 +17,7 @@ export default async function PrintDayPage({
   const { key, view, lang } = await searchParams;
   if (!key) notFound();
 
-  const supabase = createAdminClient();
+  const supabase = await createClient();
   const { data: day } = await supabase
     .from("production_days")
     .select("*")

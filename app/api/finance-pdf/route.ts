@@ -25,7 +25,8 @@ export async function GET(request: NextRequest) {
   try {
     const origin = await appOrigin();
     const pdf = await renderUrlToPdf(
-      `${origin}/print/finance/${projectId}?key=${project.share_key}&lang=${lang}`
+      `${origin}/print/finance/${projectId}?key=${project.share_key}&lang=${lang}`,
+      request.headers.get("cookie") ?? undefined
     );
     const safeName = project.name.replace(/[^\w-]+/g, "_");
     return new NextResponse(Buffer.from(pdf), {
