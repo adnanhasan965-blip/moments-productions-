@@ -329,6 +329,24 @@ export function CallSheetSheet({
           </section>
         )}
 
+        {(cs.locations?.length ?? 0) > 0 && (
+          <section>
+            <h2 className="mb-2 text-xl">{sheetLabel("locations_section", lang)}</h2>
+            <div className="grid gap-x-8 text-sm sm:grid-cols-2">
+              {cs.locations.map((l, i) => (
+                <p key={i} className="flex justify-between border-b border-black/15 py-1.5">
+                  <span>{l.name}</span>
+                  {l.link && (
+                    <a href={l.link} className="underline">
+                      {sheetLabel("map", lang)}
+                    </a>
+                  )}
+                </p>
+              ))}
+            </div>
+          </section>
+        )}
+
         {cs.schedule.length > 0 && (
           <section>
             <h2 className="mb-2 text-xl">{sheetLabel("schedule", lang)}</h2>
@@ -338,6 +356,34 @@ export function CallSheetSheet({
                   <tr key={i} className="border-b border-black/15">
                     <td className="w-20 py-1.5 font-bold">{r.time?.slice(0, 5)}</td>
                     <td className="py-1.5">{r.activity}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </section>
+        )}
+
+        {(cs.client_calls?.length ?? 0) > 0 && (
+          <section>
+            <h2 className="mb-2 text-xl">{sheetLabel("client_calls", lang)}</h2>
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-black text-[10px] tracking-[0.15em] text-black/55">
+                  <th className="py-1.5 text-start">{sheetLabel("name", lang)}</th>
+                  <th className="py-1.5 text-start">{sheetLabel("role", lang)}</th>
+                  <th className="py-1.5 text-start">{sheetLabel("phone", lang)}</th>
+                  <th className="py-1.5 text-end">{sheetLabel("call", lang)}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cs.client_calls.map((c, i) => (
+                  <tr key={i} className="border-b border-black/15">
+                    <td className="py-1.5">{c.name}</td>
+                    <td className="py-1.5">{c.role}</td>
+                    <td className="py-1.5" dir="ltr">{c.phone}</td>
+                    <td className="py-1.5 text-end font-bold">
+                      {c.call_time?.slice(0, 5)}
+                    </td>
                   </tr>
                 ))}
               </tbody>

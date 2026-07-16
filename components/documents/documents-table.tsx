@@ -48,6 +48,10 @@ function RowActions({ doc, projectId }: { doc: DocumentRow; projectId: string })
           {t("common.open")}
         </a>
       </Button>
+      {/* direct download — serves the stored PDF, or renders one on the fly */}
+      <Button variant="ghost" size="sm" asChild>
+        <a href={`/api/doc-pdf?doc=${doc.id}`}>{t("docs.download")}</a>
+      </Button>
       {doc.pdf_url ? (
         <Button variant="ghost" size="sm" asChild>
           <a href={doc.pdf_url} download={`${doc.doc_number}.pdf`}>

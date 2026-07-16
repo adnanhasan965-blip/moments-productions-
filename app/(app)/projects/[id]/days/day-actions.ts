@@ -309,9 +309,19 @@ export async function saveCallSheet(
       { form: "contact_name", key: "name" },
       { form: "contact_phone", key: "phone" },
     ]),
+    locations: parseJsonRows(formData, [
+      { form: "csloc_name", key: "name" },
+      { form: "csloc_link", key: "link" },
+    ]),
     schedule: parseJsonRows(formData, [
       { form: "schedule_time", key: "time" },
       { form: "schedule_activity", key: "activity" },
+    ]),
+    client_calls: parseJsonRows(formData, [
+      { form: "client_name", key: "name" },
+      { form: "client_role", key: "role" },
+      { form: "client_phone", key: "phone" },
+      { form: "client_call_time", key: "call_time" },
     ]),
     crew_calls: parseJsonRows(formData, [
       { form: "crew_name", key: "name" },

@@ -85,6 +85,12 @@ export interface CastCall {
   call_time: string;
 }
 
+/** Call-sheet location row — free text name plus an optional map/info link. */
+export interface CallSheetLocation {
+  name: string;
+  link: string;
+}
+
 export interface CallSheet {
   id: string;
   production_day_id: string;
@@ -93,7 +99,9 @@ export interface CallSheet {
   total_days: number | null;
   weather_note: string;
   key_contacts: KeyContact[];
+  locations: CallSheetLocation[];
   schedule: ScheduleRow[];
+  client_calls: CrewCall[];
   crew_calls: CrewCall[];
   cast_list: CastCall[];
   notes: string;
@@ -146,6 +154,8 @@ export const SHEET_LABELS = {
   locations: { en: "LOCATIONS", ar: "المواقع" },
   weather: { en: "WEATHER", ar: "الطقس" },
   key_contacts: { en: "Key contacts", ar: "جهات الاتصال الرئيسية" },
+  locations_section: { en: "Locations", ar: "المواقع" },
+  client_calls: { en: "Client calls", ar: "نداءات العميل" },
   schedule: { en: "Schedule", ar: "الجدول" },
   crew: { en: "Crew", ar: "الطاقم" },
   cast: { en: "Cast", ar: "الممثلون" },

@@ -110,11 +110,14 @@ export function CallSheetForm({ dayId, projectId, callSheet, projectCrew }: Prop
       ? callSheet.key_contacts
       : [{ role: "Producer", name: "", phone: "" }]
   );
+  // optional sections start empty — if left empty they don't print
+  const [locations, setLocations] = useState(callSheet?.locations ?? []);
   const [schedule, setSchedule] = useState(
     callSheet?.schedule?.length
       ? callSheet.schedule
       : [{ time: "", activity: "" }]
   );
+  const [clientCalls, setClientCalls] = useState(callSheet?.client_calls ?? []);
   const [crewCalls, setCrewCalls] = useState(
     callSheet?.crew_calls?.length ? callSheet.crew_calls : projectCrew
   );
@@ -177,6 +180,17 @@ export function CallSheetForm({ dayId, projectId, callSheet, projectCrew }: Prop
       />
 
       <DynamicRows
+        label={t("callSheet.locations")}
+        rows={locations}
+        empty={{ name: "", link: "" }}
+        onChange={setLocations}
+        fields={[
+          { name: "csloc_name", key: "name", placeholder: t("callSheet.locationName") },
+          { name: "csloc_link", key: "link", placeholder: t("callSheet.locationLink"), wide: true },
+        ]}
+      />
+
+      <DynamicRows
         label={t("callSheet.schedule")}
         rows={schedule}
         empty={{ time: "", activity: "" }}
@@ -184,6 +198,19 @@ export function CallSheetForm({ dayId, projectId, callSheet, projectCrew }: Prop
         fields={[
           { name: "schedule_time", key: "time", type: "time" },
           { name: "schedule_activity", key: "activity", placeholder: t("callSheet.activity"), wide: true },
+        ]}
+      />
+
+      <DynamicRows
+        label={t("callSheet.clientCalls")}
+        rows={clientCalls}
+        empty={{ name: "", role: "", phone: "", call_time: "" }}
+        onChange={setClientCalls}
+        fields={[
+          { name: "client_name", key: "name", placeholder: t("callSheet.contactName") },
+          { name: "client_role", key: "role", placeholder: t("callSheet.contactRole") },
+          { name: "client_phone", key: "phone", placeholder: t("callSheet.contactPhone") },
+          { name: "client_call_time", key: "call_time", type: "time" },
         ]}
       />
 
