@@ -13,6 +13,17 @@ const nextConfig: NextConfig = {
   // Headless-Chrome packages must stay external so Next traces their
   // binaries correctly (local: puppeteer; serverless: @sparticuz/chromium).
   serverExternalPackages: ["puppeteer", "puppeteer-core", "@sparticuz/chromium"],
+  // @sparticuz/chromium reads its compressed Chromium binary from bin/*.br
+  // at runtime via a computed path, so file-tracing doesn't see it as an
+  // import and drops it from the serverless bundle ("input directory
+  // .../@sparticuz/chromium/bin does not exist"). Force those files into
+  // the functions that launch Chromium: the day/schedule/booklet/finance
+  // PDF API routes, and the project routes (document "Make PDF" runs there
+  // as a server action).
+  outputFileTracingIncludes: {
+    "/api/**": ["./node_modules/@sparticuz/chromium/bin/**/*"],
+    "/projects/**": ["./node_modules/@sparticuz/chromium/bin/**/*"],
+  },
 };
 
 export default withNextIntl(nextConfig);
