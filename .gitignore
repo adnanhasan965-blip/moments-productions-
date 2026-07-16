@@ -50,6 +50,9 @@ supabase/.branches/
 # local team credentials (real passwords) — use scripts/seed-users.example.mjs as the template
 scripts/seed-users.mjs
 !.env.production.example
+# .env.production holds PUBLIC (NEXT_PUBLIC_*) keys only — safe to commit so
+# Vercel bakes them into the build. Never add the service_role secret here.
+!.env.production
 
 # agent skills (local tooling)
 .agents/
