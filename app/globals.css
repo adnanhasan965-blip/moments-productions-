@@ -205,6 +205,13 @@
   h2 {
     break-after: avoid;
   }
+  /* Fill printed pages with the brand cream so leftover space at the
+     bottom of a sheet's last page reads as designed paper, not a white
+     gap where the sheet "ran out". */
+  html,
+  body {
+    background: #f5f0e8;
+  }
 }
 
 /* ============ PUBLIC PAGE MOTION ============ */

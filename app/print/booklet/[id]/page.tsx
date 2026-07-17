@@ -76,6 +76,48 @@ export default async function PrintBookletPage({
 
   const dir = sheetLang === "ar" ? "rtl" : "ltr";
 
+  // Flatten the per-day sheets so we know which one is truly last — the
+  // last sheet must NOT force a page break after itself, or the PDF ends
+  // with a blank page.
+  const daySheets = (days ?? []).flatMap((day) => {
+    const callSheet = (allCallSheets ?? []).find(
+      (c) => c.production_day_id === day.id
+    );
+    const shots = (allShots ?? []).filter(
+      (s) => s.production_day_id === day.id
+    );
+    const sheets: { key: string; node: React.ReactNode }[] = [];
+    if (callSheet) {
+      sheets.push({
+        key: `${day.id}-call`,
+        node: (
+          <CallSheetSheet
+            day={day}
+            callSheet={callSheet}
+            projectName={project.name}
+            lang={sheetLang}
+            clientLogoUrl={clientLogoUrl}
+          />
+        ),
+      });
+    }
+    if (shots.length > 0) {
+      sheets.push({
+        key: `${day.id}-shots`,
+        node: (
+          <ShotListSheet
+            day={day}
+            shots={shots}
+            projectName={project.name}
+            lang={sheetLang}
+            clientLogoUrl={clientLogoUrl}
+          />
+        ),
+      });
+    }
+    return sheets;
+  });
+
   return (
     <main className="min-h-screen bg-black/90 py-8 print:bg-transparent print:py-0">
       <div className="mx-auto mb-6 flex w-full max-w-[190mm] justify-end px-4 print:hidden">
@@ -149,7 +191,9 @@ export default async function PrintBookletPage({
         <div
           dir={dir}
           lang={sheetLang}
-          className="relative w-full bg-[#F5F0E8] p-5 text-black shadow-2xl sm:p-10 print:min-h-[277mm] print:break-after-page print:shadow-none"
+          className={`relative w-full bg-[#F5F0E8] p-5 text-black shadow-2xl sm:p-10 print:min-h-[277mm] print:shadow-none ${
+            daySheets.length > 0 ? "print:break-after-page" : ""
+          }`}
         >
           <h2 className="text-4xl">{sheetLabel("schedule_title", sheetLang)}</h2>
           <table className="mt-8 w-full text-sm">
@@ -198,40 +242,16 @@ export default async function PrintBookletPage({
         </div>
 
         {/* ============ PER DAY · call sheet + shot list ============ */}
-        {(days ?? []).map((day) => {
-          const callSheet = (allCallSheets ?? []).find(
-            (c) => c.production_day_id === day.id
-          );
-          const shots = (allShots ?? []).filter(
-            (s) => s.production_day_id === day.id
-          );
-          return (
-            <div key={day.id} className="space-y-8 print:space-y-0">
-              {callSheet && (
-                <div className="shadow-2xl print:break-after-page print:shadow-none">
-                  <CallSheetSheet
-                    day={day}
-                    callSheet={callSheet}
-                    projectName={project.name}
-                    lang={sheetLang}
-                    clientLogoUrl={clientLogoUrl}
-                  />
-                </div>
-              )}
-              {shots.length > 0 && (
-                <div className="shadow-2xl print:break-after-page print:shadow-none">
-                  <ShotListSheet
-                    day={day}
-                    shots={shots}
-                    projectName={project.name}
-                    lang={sheetLang}
-                    clientLogoUrl={clientLogoUrl}
-                  />
-                </div>
-              )}
-            </div>
-          );
-        })}
+        {daySheets.map((sheet, i) => (
+          <div
+            key={sheet.key}
+            className={`shadow-2xl print:shadow-none ${
+              i < daySheets.length - 1 ? "print:break-after-page" : ""
+            }`}
+          >
+            {sheet.node}
+          </div>
+        ))}
       </div>
     </main>
   );

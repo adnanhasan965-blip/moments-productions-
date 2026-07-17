@@ -21,9 +21,11 @@ function SheetShell({
     <div
       dir={lang === "ar" ? "rtl" : "ltr"}
       lang={lang}
-      className="relative mx-auto w-full max-w-[190mm] bg-[#F5F0E8] p-5 sm:p-10 print:min-h-[277mm] print:w-[190mm] text-black"
+      className="relative mx-auto flex w-full max-w-[190mm] flex-col bg-[#F5F0E8] p-5 sm:p-10 print:min-h-[277mm] print:w-[190mm] text-black"
     >
-      {children}
+      {/* flex-1 stretches the content area so the footer sits at the bottom
+          of the sheet instead of floating mid-page above empty space */}
+      <div className="flex-1">{children}</div>
       <footer className="mt-16 border-t border-black/20 pt-4 text-center text-[10px] tracking-[0.3em] text-black/55">
         MOMENTS PRODUCTIONS · KUWAIT · THE WORLD
       </footer>

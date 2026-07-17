@@ -44,7 +44,7 @@ export default async function PrintSchedulePage({
       <div
         dir={sheetLang === "ar" ? "rtl" : "ltr"}
         lang={sheetLang}
-        className="relative mx-auto w-full max-w-[190mm] bg-[#F5F0E8] p-5 sm:p-10 print:min-h-[277mm] print:w-[190mm] text-black shadow-2xl print:shadow-none"
+        className="relative mx-auto flex w-full max-w-[190mm] flex-col bg-[#F5F0E8] p-5 sm:p-10 print:min-h-[277mm] print:w-[190mm] text-black shadow-2xl print:shadow-none"
       >
         <header className="flex items-start justify-between gap-6">
           <div>
@@ -119,7 +119,9 @@ export default async function PrintSchedulePage({
           </tbody>
         </table>
 
-        <ScheduleCalendar days={days ?? []} lang={sheetLang} />
+        <div className="flex-1">
+          <ScheduleCalendar days={days ?? []} lang={sheetLang} />
+        </div>
 
         <footer className="mt-16 border-t border-black/20 pt-4 text-center text-[10px] tracking-[0.3em] text-black/55">
           MOMENTS PRODUCTIONS · KUWAIT · THE WORLD
