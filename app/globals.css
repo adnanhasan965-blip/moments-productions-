@@ -186,6 +186,27 @@
   letter-spacing: 0 !important;
 }
 
+/* ============ PRINT / PDF PAGINATION ============ */
+/* Applies to every printable sheet (PDFs render with print CSS).
+   - A section that doesn't fit moves to the next page whole, instead of
+     leaving its heading orphaned at the bottom of the previous page.
+   - Table rows never get sliced in half across pages.
+   - A heading is never separated from the content right below it.
+   A section taller than one page still breaks (unavoidable), but its
+   header row repeats on the next page automatically. */
+@media print {
+  section {
+    break-inside: avoid;
+  }
+  tr {
+    break-inside: avoid;
+  }
+  h1,
+  h2 {
+    break-after: avoid;
+  }
+}
+
 /* ============ PUBLIC PAGE MOTION ============ */
 /* Scroll-reveal: elements start hidden + lowered, animate in when the
    IntersectionObserver adds .is-visible. */
