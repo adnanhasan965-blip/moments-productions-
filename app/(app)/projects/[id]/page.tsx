@@ -19,9 +19,8 @@ import {
   ProductionCalendar,
   type CalendarEntry,
 } from "@/components/production/production-calendar";
-import { CopyLinkButton } from "@/components/copy-link-button";
 import type { DocumentRow } from "@/lib/documents";
-import type { ProductionDay } from "@/lib/production";
+import { isTodoDayType, type ProductionDay } from "@/lib/production";
 import { getLocale, getTranslations } from "next-intl/server";
 import { formatDate, formatMoney } from "@/lib/format";
 import {
@@ -272,10 +271,6 @@ export default async function ProjectPage({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h3 className="text-2xl">{t("days.title")}</h3>
             <div className="flex flex-wrap gap-2">
-              <CopyLinkButton
-                path={`/print/schedule/${project.id}?key=${project.share_key}&lang=${locale}`}
-                label={t("days.copyScheduleLink")}
-              />
               <Button variant="outline" size="sm" asChild>
                 <a href={`/api/schedule-pdf?project=${project.id}&lang=${locale}`}>{t("days.schedulePdf")}</a>
               </Button>
@@ -297,12 +292,14 @@ export default async function ProjectPage({
           ) : (
             <div className="divide-y border">
               {dayRows.map((d) => (
-                <Link
+                <div
                   key={d.id}
-                  href={`/projects/${project.id}/days/${d.id}`}
                   className="flex flex-wrap items-center justify-between gap-3 p-4 hover:bg-secondary"
                 >
-                  <div>
+                  <Link
+                    href={`/projects/${project.id}/days/${d.id}`}
+                    className="min-w-48 flex-1"
+                  >
                     <p className="font-bold">
                       {formatDate(d.day_date, locale)}
                       {d.title ? ` — ${d.title}` : ""}
@@ -311,11 +308,33 @@ export default async function ProjectPage({
                       {d.locations.map((l) => l.name).filter(Boolean).join(" · ") ||
                         t("days.noLocations")}
                     </p>
+                  </Link>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {isTodoDayType(d.day_type) ? (
+                      <Button variant="ghost" size="sm" asChild>
+                        <a href={`/api/day-pdf?day=${d.id}&view=todo&lang=${locale}`}>
+                          ↓ {t("todos.title")}
+                        </a>
+                      </Button>
+                    ) : (
+                      <>
+                        <Button variant="ghost" size="sm" asChild>
+                          <a href={`/api/day-pdf?day=${d.id}&view=shots&lang=${locale}`}>
+                            ↓ {t("shots.title")}
+                          </a>
+                        </Button>
+                        <Button variant="ghost" size="sm" asChild>
+                          <a href={`/api/day-pdf?day=${d.id}&view=call&lang=${locale}`}>
+                            ↓ {t("callSheet.title")}
+                          </a>
+                        </Button>
+                      </>
+                    )}
+                    <Badge variant={d.day_type === "shoot" ? "default" : "outline"}>
+                      {tDay(d.day_type)}
+                    </Badge>
                   </div>
-                  <Badge variant={d.day_type === "shoot" ? "default" : "outline"}>
-                    {tDay(d.day_type)}
-                  </Badge>
-                </Link>
+                </div>
               ))}
             </div>
           )}
