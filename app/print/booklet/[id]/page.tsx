@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { CallSheetSheet, ShotListSheet } from "@/components/production/day-sheets";
 import { PrintButton } from "@/components/documents/print-button";
+import { ScheduleCalendar } from "@/components/production/schedule-calendar";
 import { formatDate, formatMoney, type Currency } from "@/lib/format";
 import {
   dayTypeLabel,
@@ -192,6 +193,8 @@ export default async function PrintBookletPage({
               )}
             </tbody>
           </table>
+
+          <ScheduleCalendar days={days ?? []} lang={sheetLang} />
         </div>
 
         {/* ============ PER DAY · call sheet + shot list ============ */}
