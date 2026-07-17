@@ -103,7 +103,7 @@ export default async function PrintBookletPage({
               <img
                 src={clientLogoUrl}
                 alt=""
-                className="h-12 w-44 bg-[#F5F0E8] object-contain p-1.5"
+                className="h-12 w-44 object-contain"
               />
             )}
           </div>
